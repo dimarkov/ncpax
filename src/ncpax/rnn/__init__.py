@@ -14,9 +14,9 @@
 
 
 from .ltc_cell import LTCCell
-from .cfc_cell import CfCCell
+from .cfc_cell import CfCCell, CfCNNCell
 # from .wired_cfc_cell import WiredCfCCell
 # from .cfc import CfC
 from .lrnn import LiquidRNN
 
-__all__ = ["LiquidRNN", "LTCCell", "CfCCell"]
+__all__ = ["LiquidRNN", "LTCCell", "CfCCell", "CfCNNCell"]

@@ -68,3 +68,42 @@ class CfCCell(eqx.Module):
         last_state = B * jnp.exp(- elapsed_time * (w_tau + response)) * neg_response + A
         
         return last_state
+    
+
+class CfCNNCell(eqx.Module):
+    params: Module
+    mode: str
+
+    def __init__(
+        self,
+        params: Module,
+        mode: str = "with_gate",
+        **kwargs
+    ):
+        """A `Closed-form Continuous-time <https://arxiv.org/abs/2106.13898>`_ cell
+        that uses feedforward neural networks to approximate the solution.
+
+        .. Note::
+            This is an RNNCell that process single time-steps.
+        """
+        
+        self.params = params
+        self.mode = mode
+   
+    def __call__(self, input, hidden, elapsed_time: Optional[float] = 1.0, **kwargs):
+
+        x = jnp.concatenate([input, hidden], -1)
+        x = self.params.backbone(x)
+        ff1 = jnp.tanh(self.params.ff1(x))
+        ff2 = jnp.tanh(self.params.ff2(x))
+
+        t_a = self.params.time_a(x)
+        t_b = self.params.time_b(x)
+        t_interpolate = jnn.sigmoid(t_a * elapsed_time + t_b)
+
+        if self.mode == "no_gate":
+            last_state = ff1 + t_interpolate * ff2
+        else:
+            last_state = ff1 * (1 - t_interpolate) + t_interpolate * ff2
+
+        return last_state
