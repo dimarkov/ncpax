@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
-packages = find_packages()
+package_dir = \
+{'': 'src'}
+
+packages = find_namespace_packages(where='src')
 
 install_requires = \
 [
@@ -39,6 +42,7 @@ setup_kwargs = {
     'maintainer': 'dimarkov',
     'maintainer_email': '5038100+dimarkov@users.noreply.github.com',
     'url': 'https://github.com/dimarkov/ncpax',
+    'package_dir': package_dir,
     'packages': packages,
     'install_requires': install_requires,
     'setup_requires': ['pytest-runner', 'flake8'],
