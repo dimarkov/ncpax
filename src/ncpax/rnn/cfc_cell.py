@@ -90,7 +90,7 @@ class CfCNNCell(eqx.Module):
         self.params = params
         self.mode = mode
    
-    def __call__(self, input, hidden, elapsed_time: Optional[float] = 1.0, **kwargs):
+    def __call__(self, input, hidden, elapsed_time: Optional[float] = 1.0):
 
         x = jnp.concatenate([input, hidden], -1)
         x = self.params.backbone(x)
